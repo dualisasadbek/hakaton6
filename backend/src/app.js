@@ -8,6 +8,11 @@ import apiRoutes from "./routes/index.js";
 import { notFoundHandler, errorHandler } from "./middlewares/error.middleware.js";
 import { uploadDir } from "./middlewares/upload.middleware.js";
 
+const allowedOrigins = (config.CLIENT_URL || "")
+  .split(",")
+  .map((s) => s.trim())
+  .filter(Boolean);
+
 class App {
   constructor() {
     this.app = express();
@@ -21,7 +26,10 @@ class App {
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use(
       cors({
-        origin: config.CLIENT_URL,
+        origin(origin, callback) {
+          if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+          callback(null, false);
+        },
         credentials: true,
       })
     );

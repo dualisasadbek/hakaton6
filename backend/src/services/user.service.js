@@ -20,6 +20,8 @@ class UserService {
   }
 
   async list({ page = 1, limit = 20, search, role }) {
+    page = Number(page) || 1;
+    limit = Number(limit) || 20;
     const where = {};
     if (search) {
       where.OR = [

@@ -43,6 +43,7 @@ model User {
   complaints   Complaint[]
   votes        Vote[]
   statusHistory ComplaintStatusHistory[]
+  announcements Announcement[]
 
   @@map("users")
 }
@@ -134,4 +135,20 @@ model ComplaintStatusHistory {
 
   @@index([complaintId])
   @@map("complaint_status_history")
+}
+
+model Announcement {
+  id          String    @id @default(uuid())
+  title       String
+  body        String
+  area        String?
+  fixAt       DateTime?
+  isActive    Boolean   @default(true)
+  createdById String?
+  createdBy   User?     @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([isActive])
+  @@map("announcements")
 }

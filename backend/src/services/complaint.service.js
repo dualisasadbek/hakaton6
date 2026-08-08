@@ -97,6 +97,8 @@ class ComplaintService {
   }
 
   async list({ page = 1, limit = 20, status, categoryId, search, sort }) {
+    page = Number(page) || 1;
+    limit = Number(limit) || 20;
     const where = {};
     if (status) where.status = status;
     if (categoryId) where.categoryId = categoryId;

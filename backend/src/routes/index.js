@@ -6,6 +6,7 @@ import complaintRoutes from "./complaint.routes.js";
 import voteRoutes from "./vote.routes.js";
 import aiRoutes from "./ai.routes.js";
 import adminRoutes from "./admin.routes.js";
+import announcementRoutes from "./announcement.routes.js";
 
 const router = Router();
 
@@ -20,5 +21,6 @@ router.use("/complaints", complaintRoutes);
 router.use("/", voteRoutes);
 router.use("/ai", aiRoutes);
 router.use("/admin", adminRoutes);
+router.use("/announcements", announcementRoutes);
 
 export default router;
