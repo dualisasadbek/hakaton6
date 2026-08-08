@@ -1,0 +1,137 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum ComplaintStatus {
+  PENDING
+  VERIFIED
+  IN_PROGRESS
+  RESOLVED
+  REJECTED
+  BLOCKED
+}
+
+enum AiDecision {
+  PENDING
+  APPROVED
+  BLOCKED
+}
+
+model User {
+  id           String                 @id @default(uuid())
+  firstName    String
+  lastName     String
+  email        String                 @unique
+  passwordHash String
+  role         Role                   @default(USER)
+  isBlocked    Boolean                @default(false)
+  avatarUrl    String?
+  createdAt    DateTime               @default(now())
+  updatedAt    DateTime               @updatedAt
+  refreshTokens RefreshToken[]
+  complaints   Complaint[]
+  votes        Vote[]
+  statusHistory ComplaintStatusHistory[]
+
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}
+
+model Category {
+  id         String      @id @default(uuid())
+  name       String      @unique
+  slug       String      @unique
+  icon       String?
+  isActive   Boolean     @default(true)
+  createdAt  DateTime    @default(now())
+  complaints Complaint[]
+
+  @@map("categories")
+}
+
+model Complaint {
+  id          String              @id @default(uuid())
+  userId      String
+  user        User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categoryId  String
+  category    Category            @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  title       String
+  description String
+  latitude    Float
+  longitude   Float
+  address     String?
+  status      ComplaintStatus     @default(PENDING)
+  aiDecision  AiDecision          @default(PENDING)
+  aiAnalysis  Json?
+  resolvedAt  DateTime?
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  images      ComplaintImage[]
+  votes       Vote[]
+  statusHistory ComplaintStatusHistory[]
+
+  @@index([status])
+  @@index([createdAt])
+  @@index([categoryId])
+  @@map("complaints")
+}
+
+model ComplaintImage {
+  id          String    @id @default(uuid())
+  complaintId String
+  complaint   Complaint @relation(fields: [complaintId], references: [id], onDelete: Cascade)
+  url         String
+  isPrimary   Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+
+  @@map("complaint_images")
+}
+
+model Vote {
+  id          String    @id @default(uuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  complaintId String
+  complaint   Complaint @relation(fields: [complaintId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+
+  @@unique([userId, complaintId])
+  @@map("votes")
+}
+
+model ComplaintStatusHistory {
+  id          String          @id @default(uuid())
+  complaintId String
+  complaint   Complaint       @relation(fields: [complaintId], references: [id], onDelete: Cascade)
+  changedById String?
+  changedBy   User?           @relation(fields: [changedById], references: [id], onDelete: SetNull)
+  fromStatus  ComplaintStatus
+  toStatus    ComplaintStatus
+  comment     String?
+  createdAt   DateTime        @default(now())
+
+  @@index([complaintId])
+  @@map("complaint_status_history")
+}
