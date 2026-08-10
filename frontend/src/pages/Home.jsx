@@ -36,7 +36,7 @@ export default function Home() {
 
   useEffect(() => {
     api
-      .get('/admin/stats', { skipRefresh: true })
+      .get('/stats', { skipRefresh: true })
       .then((res) => setStats(res?.data || null))
       .catch(() => setStats(null))
       .finally(() => setStatsLoading(false))

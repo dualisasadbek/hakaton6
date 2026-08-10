@@ -1,4 +1,4 @@
-export const BASE_URL = 'http://localhost:5001'
+export const BASE_URL = 'https://fixmycity-backend-xr4n.onrender.com'
 
 // Serverdan kelgan /uploads/... path'ni to'liq URL'ga aylantiradi
 export const assetUrl = (path) => {

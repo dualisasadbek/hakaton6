@@ -7,12 +7,16 @@ import voteRoutes from "./vote.routes.js";
 import aiRoutes from "./ai.routes.js";
 import adminRoutes from "./admin.routes.js";
 import announcementRoutes from "./announcement.routes.js";
+import { adminController } from "../controllers/admin.controller.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 
 const router = Router();
 
 router.get("/health", (_req, res) =>
   res.json({ success: true, message: "FixMyCity API ishlayapti", timestamp: new Date().toISOString() })
 );
+
+router.get("/stats", asyncHandler(adminController.publicStats));
 
 router.use("/auth", authRoutes);
 router.use("/users", userRoutes);

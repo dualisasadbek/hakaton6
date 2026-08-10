@@ -38,7 +38,11 @@ class Config {
   }
 
   get cookieOptions() {
-    const base = { httpOnly: true, secure: this.COOKIE_SECURE, sameSite: "lax" };
+    const base = {
+      httpOnly: true,
+      secure: this.COOKIE_SECURE,
+      sameSite: this.COOKIE_SECURE ? "none" : "lax",
+    };
     return { ...base, maxAge: 7 * 24 * 60 * 60 * 1000 };
   }
 

@@ -2,6 +2,11 @@ import { adminService } from "../services/admin.service.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 
 class AdminController {
+  async publicStats(_req, res) {
+    const stats = await adminService.publicStats();
+    res.json(ApiResponse.ok("Statistika", stats));
+  }
+
   async stats(_req, res) {
     const stats = await adminService.stats();
     res.json(ApiResponse.ok("Statistika", stats));

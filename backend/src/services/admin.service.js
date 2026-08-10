@@ -1,6 +1,17 @@
 import { prisma } from "../config/database.js";
 
 class AdminService {
+  async publicStats() {
+    const [totalComplaints, pendingComplaints, resolvedComplaints, totalVotes] =
+      await Promise.all([
+        prisma.complaint.count(),
+        prisma.complaint.count({ where: { status: "PENDING" } }),
+        prisma.complaint.count({ where: { status: "RESOLVED" } }),
+        prisma.vote.count(),
+      ]);
+    return { totalComplaints, pendingComplaints, resolvedComplaints, totalVotes };
+  }
+
   async stats() {
     const [
       totalUsers,
