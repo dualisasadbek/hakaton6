@@ -3,6 +3,7 @@ import { z } from "zod";
 import { categoryController } from "../controllers/category.controller.js";
 import { requireRole } from "../middlewares/auth.middleware.js";
 import { validate } from "../middlewares/validate.middleware.js";
+import { shortCache } from "../middlewares/cache.middleware.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
 const router = Router();
@@ -30,7 +31,7 @@ const updateSchema = createSchema.partial();
  *       200:
  *         description: Ro'yxat
  */
-router.get("/", asyncHandler(categoryController.list));
+router.get("/", shortCache(60), asyncHandler(categoryController.list));
 
 /**
  * @swagger

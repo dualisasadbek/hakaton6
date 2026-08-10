@@ -53,15 +53,10 @@ class ComplaintService {
       include: publicInclude,
     });
 
-    if (files.length) {
-      this.runAiAnalysis(complaint.id, title, description, files).catch((err) =>
-        console.warn("AI analysis background error:", err)
-      );
-    } else {
-      this.runAiAnalysis(complaint.id, title, description, []).catch((err) =>
-        console.warn("AI analysis background error:", err)
-      );
-    }
+    // AI tahlilini fon rejimida ishga tushirish (request'ni ushlamaslik uchun)
+    this.runAiAnalysis(complaint.id, title, description, files).catch((err) =>
+      console.warn("AI analysis background error:", err)
+    );
 
     return complaint;
   }

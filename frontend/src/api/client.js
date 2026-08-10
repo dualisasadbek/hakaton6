@@ -1,9 +1,13 @@
 import axios from 'axios'
 import { BASE_URL } from '../utils/format.js'
 
+// Vite proxy orqali ishlayotgan bo'lsa (development) - same-origin cookie'larni saqlash oson
+const apiBaseURL = import.meta.env.DEV ? '/api' : `${BASE_URL}/api`
+
 const api = axios.create({
-  baseURL: `${BASE_URL}/api`,
+  baseURL: apiBaseURL,
   withCredentials: true,
+  timeout: 15000,
 })
 
 let refreshPromise = null
@@ -32,7 +36,7 @@ api.interceptors.response.use(
     ) {
       if (!refreshPromise) {
         refreshPromise = axios
-          .post(`${BASE_URL}/api/auth/refresh`, null, { withCredentials: true })
+          .post(apiBaseURL + '/auth/refresh', null, { withCredentials: true })
           .then((r) => r.data)
           .catch(() => null)
           .finally(() => {

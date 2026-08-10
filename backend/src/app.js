@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import compression from "compression";
+import helmet from "helmet";
 import swaggerUi from "swagger-ui-express";
 import config from "./config/env.js";
 import { swaggerSpec } from "./config/swagger.js";
@@ -22,6 +24,8 @@ class App {
   }
 
   configure() {
+    this.app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
+    this.app.use(compression());
     this.app.use(express.json({ limit: "2mb" }));
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use(
@@ -34,7 +38,15 @@ class App {
       })
     );
     this.app.use(cookieParser());
-    this.app.use("/uploads", express.static(uploadDir));
+    // Static rasmlar uchun uzoq muddatli brauzer keshi
+    this.app.use(
+      "/uploads",
+      express.static(uploadDir, {
+        maxAge: "30d",
+        immutable: true,
+        etag: true,
+      })
+    );
   }
 
   routes() {

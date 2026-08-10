@@ -4,6 +4,7 @@ import { complaintController } from "../controllers/complaint.controller.js";
 import { optionalAuth, requireAdmin, requireAuth } from "../middlewares/auth.middleware.js";
 import { validate } from "../middlewares/validate.middleware.js";
 import { uploadMultiple } from "../middlewares/upload.middleware.js";
+import { shortCache } from "../middlewares/cache.middleware.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
 const router = Router();
@@ -61,7 +62,7 @@ const statusSchema = z.object({
  *       200:
  *         description: Ro'yxat
  */
-router.get("/", asyncHandler(complaintController.list));
+router.get("/", shortCache(15), asyncHandler(complaintController.list));
 
 /**
  * @swagger
@@ -73,7 +74,7 @@ router.get("/", asyncHandler(complaintController.list));
  *       200:
  *         description: Markerlar
  */
-router.get("/map", asyncHandler(complaintController.mapList));
+router.get("/map", shortCache(30), asyncHandler(complaintController.mapList));
 
 /**
  * @swagger

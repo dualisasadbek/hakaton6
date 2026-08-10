@@ -9,7 +9,7 @@ const options = {
       description:
         "FixMyCity - shahar muammolarini kuzatish platformasi. AI yordamida shikoyatlarni tahlil qilish.",
     },
-    servers: [{ url: "http://localhost:5000/api", description: "Local server" }],
+    servers: [{ url: "http://localhost:5001/api", description: "Local server" }],
     components: {
       securitySchemes: {
         bearerAuth: {
